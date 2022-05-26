@@ -5,24 +5,11 @@ const Button = (props) => (
     {props.text}
   </button>
 )
-const StatisticLine = ({ text, value }) => {
-  if (text === 'positive') {
-    return (
-      <tr>
-        <td>  {text} </td>
-        <td> {value} % </td>
-      </tr>
-    )
-  }
-  else {
-    return (
-      <tr>
-        <td>  {text} </td>
-        <td> {value} </td>
-      </tr>
-    )
-  }
-}
+const StatisticLine = ({ text, value }) =>
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+  </tr>
 const Statistics = ({ good, neutral, bad }) => {
   if ((good + neutral + bad) !== 0) {
     return (<div>
@@ -33,7 +20,7 @@ const Statistics = ({ good, neutral, bad }) => {
         <StatisticLine text="bad" value={bad} />
         <StatisticLine text="all" value={good + neutral + bad} />
         <StatisticLine text="average" value={(good - bad) / (good + neutral + bad)} />
-        <StatisticLine text="positive" value={good / (good + neutral + bad) * 100} />
+        <StatisticLine text="positive" value={good / (good + neutral + bad) * 100 + '%'} />
       </table>
     </div>
     )
