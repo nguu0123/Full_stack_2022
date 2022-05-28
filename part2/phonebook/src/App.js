@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import phoneService from './services/persons'
+import './App.css'
 
 
 const Filter = ({ nameFind, persons }) => {
@@ -36,7 +37,7 @@ const PersonForm = ({ addName, newName, handleNameChange, newPhoneNumber, handle
   )
 }
 
-const Persons = ({ persons, setPersons }) => {
+const Persons = ({ persons, setPersons, setErrorMessage, setNewName, setNewPhoneNumber }) => {
   return (
     <div>
       {
@@ -47,6 +48,15 @@ const Persons = ({ persons, setPersons }) => {
               if (window.confirm(`Delete ${person.name}?`)) {
                 phoneService.deletePhone(person.id)
                   .then(response => setPersons(persons.filter(n => n.id !== person.id)))
+                  .catch(error => {
+                    setErrorMessage(`Information of ${person.name} has already been removed from server`)
+                    setTimeout(() => {
+                      setErrorMessage(null)
+                    }, 5000)
+                    setPersons(persons.filter(n => n.id !== person.id))
+                    setNewName('')
+                    setNewPhoneNumber('')
+                  })
               }
             }}>
               delete</button>
@@ -56,11 +66,25 @@ const Persons = ({ persons, setPersons }) => {
     </div>
   )
 }
+const Notification = ({ message, className }) => {
+  if (message === null) {
+    return null
+  }
+
+  return (
+    <div className={className}>
+      {message}
+    </div>
+  )
+}
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newPhoneNumber, setNewPhoneNumber] = useState('')
   const [nameSearch, setNameSearch] = useState('')
+  const [confirmMessage, setConfirmMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
+
   const addName = (event) => {
     event.preventDefault()
     const nameObject = {
@@ -73,6 +97,19 @@ const App = () => {
         phoneService.update(id, nameObject)
           .then(response => {
             setPersons(persons.map(person => person.id !== id ? person : response))
+            setConfirmMessage(`Changed ${newName}`)
+            setTimeout(() => {
+              setConfirmMessage(null)
+            }, 5000)
+            setNewName('')
+            setNewPhoneNumber('')
+          })
+          .catch(error => {
+            setErrorMessage(`Information of ${newName} has already been removed from server`)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
+            setPersons(persons.filter(n => n.id !== id))
             setNewName('')
             setNewPhoneNumber('')
           })
@@ -82,6 +119,10 @@ const App = () => {
       phoneService.create(nameObject)
         .then(response => {
           setPersons(persons.concat(response))
+          setConfirmMessage(`Added ${newName}`)
+          setTimeout(() => {
+            setConfirmMessage(null)
+          }, 5000)
           setNewName('')
           setNewPhoneNumber('')
         })
@@ -107,6 +148,8 @@ const App = () => {
   return (
     <div>
       <h2> Phonebook</h2>
+      <Notification message={confirmMessage} className='notification' />
+      <Notification message={errorMessage} className='error' />
       <div>
         filter shown with <input value={nameSearch} onChange={handleNameSearch} />
         <Filter nameFind={nameSearch} persons={persons} />
@@ -114,7 +157,7 @@ const App = () => {
       <h3>add a new</h3>
       <PersonForm addName={addName} newName={newName} handleNameChange={handleNameChange} newPhoneNumber={newPhoneNumber} handlePhoneChange={handlePhoneChange} />
       <h3>Numbers</h3>
-      <Persons persons={persons} setPersons={setPersons} />
+      <Persons persons={persons} setPersons={setPersons} setErrorMessage={setErrorMessage} setNewName={setNewName} setNewPhoneNumber={setNewPhoneNumber} />
     </div>
   )
 }
