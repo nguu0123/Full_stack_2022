@@ -1,4 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import phoneService from './services/persons'
+
+
 const Filter = ({ nameFind, persons }) => {
   if (nameFind !== '') {
     return (
@@ -32,13 +35,21 @@ const PersonForm = ({ addName, newName, handleNameChange, newPhoneNumber, handle
     </form>
   )
 }
-const Persons = ({ persons }) => {
+
+const Persons = ({ persons, setPersons }) => {
   return (
     <div>
       {
         persons.map((person, i) =>
           <div key={i}>
             {person.name} {person.number}
+            <button onClick={() => {
+              if (window.confirm(`Delete ${person.name}?`)) {
+                phoneService.deletePhone(person.id)
+                  .then(response => setPersons(persons.filter(n => n.id !== person.id)))
+              }
+            }}>
+              delete</button>
           </div>
         )
       }
@@ -46,12 +57,7 @@ const Persons = ({ persons }) => {
   )
 }
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ])
+  const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newPhoneNumber, setNewPhoneNumber] = useState('')
   const [nameSearch, setNameSearch] = useState('')
@@ -61,12 +67,24 @@ const App = () => {
       name: newName,
       number: newPhoneNumber
     }
-    if (persons.map(person => person.name).includes(newName))
-      window.alert(`${newName} is already added to phonebook`)
+    if (persons.map(person => person.name).includes(newName)) {
+      if (window.confirm(`${newName} already added to phonebook, replace the old number with the new one?`)) {
+        const id = persons.find(person => person.name === newName).id
+        phoneService.update(id, nameObject)
+          .then(response => {
+            setPersons(persons.map(person => person.id !== id ? person : response))
+            setNewName('')
+            setNewPhoneNumber('')
+          })
+      }
+    }
     else {
-      setPersons(persons.concat(nameObject))
-      setNewName('')
-      setNewPhoneNumber('')
+      phoneService.create(nameObject)
+        .then(response => {
+          setPersons(persons.concat(response))
+          setNewName('')
+          setNewPhoneNumber('')
+        })
     }
   }
 
@@ -79,6 +97,13 @@ const App = () => {
   const handleNameSearch = (event) => {
     setNameSearch(event.target.value)
   }
+  useEffect(() => {
+    phoneService
+      .getAll()
+      .then(initialPhone => {
+        setPersons(initialPhone)
+      })
+  }, [])
   return (
     <div>
       <h2> Phonebook</h2>
@@ -89,7 +114,7 @@ const App = () => {
       <h3>add a new</h3>
       <PersonForm addName={addName} newName={newName} handleNameChange={handleNameChange} newPhoneNumber={newPhoneNumber} handlePhoneChange={handlePhoneChange} />
       <h3>Numbers</h3>
-      <Persons persons={persons} />
+      <Persons persons={persons} setPersons={setPersons} />
     </div>
   )
 }
