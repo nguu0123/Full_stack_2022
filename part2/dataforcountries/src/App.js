@@ -1,12 +1,8 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 const ShowCountryData = ({ country }) => {
-  const img = document.createElement(Object.values(country.flags)[0]);
-
-  img.src = src;
-  document.body.appendChild(img);
   return (
-    <div>
+    <div id={country.id}>
       <h2> {country.name.common}</h2>
       <div>
         <p>capital {country.capital} <br /> area {country.area}  </p>
@@ -19,27 +15,25 @@ const ShowCountryData = ({ country }) => {
           )}
         </ul>
       </div>
-      <h1 id="flag">
-        {console.log(Object.values(country.flags))}
-      </h1>
+      <img src={Object.values(country.flags)[0]} alt='Switzerland '></img>
     </div>
   )
 }
-const ShowButton = ({ country }) => {
-  const handleClick = () => {
-    var p = document.getElementById("paragraph");
-    p.style.display = "block";
+const ShowButton = (id, country) => {
+  function myFunction() {
+    var x = document.getElementById("myDIV");
+    if (x.innerHTML === "Hello") {
+      x.innerHTML = "Swapped text!";
+    } else {
+      x.innerHTML = "Hello";
+    }
   }
-  return (
-    <div>
-      <button onClick={handleClick}>Show </button>
-      <div id={"paragraph"}>
-        hello
-      </div>
-    </div>
-
-  )
+  return [
+    <button key={id}>Show </button>
+  ]
 }
+
+
 const Filter = ({ countryFind, persons }) => {
   if (countryFind !== '') {
     const filterCountries = persons.filter(country => country.name.common.toLowerCase().includes(countryFind.toLowerCase()))
@@ -50,7 +44,10 @@ const Filter = ({ countryFind, persons }) => {
       return (
         <div>
           {filterCountries.map((country, i) =>
-            <div key={i} > {country.name.common} <ShowButton country={country} /> </div>
+            <div key={i} >
+              {country.name.common} <ShowButton id={i} />
+              <ShowCountryData country={country} />
+            </div>
           )}
 
         </div>
