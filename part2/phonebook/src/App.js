@@ -37,7 +37,7 @@ const PersonForm = ({ addName, newName, handleNameChange, newPhoneNumber, handle
   )
 }
 
-const Persons = ({ persons, setPersons, setErrorMessage, setNewName, setNewPhoneNumber }) => {
+const Persons = ({ persons, setPersons, setErrorMessage, setNewName, setNewPhoneNumber, setConfirmMessage }) => {
   return (
     <div>
       {
@@ -47,7 +47,10 @@ const Persons = ({ persons, setPersons, setErrorMessage, setNewName, setNewPhone
             <button onClick={() => {
               if (window.confirm(`Delete ${person.name}?`)) {
                 phoneService.deletePhone(person.id)
-                  .then(response => setPersons(persons.filter(n => n.id !== person.id)))
+                  .then(response => {
+                    setPersons(persons.filter(n => n.id !== person.id))
+                    setConfirmMessage(`Delete ${person.name}`)
+                  })
                   .catch(error => {
                     setErrorMessage(`Information of ${person.name} has already been removed from server`)
                     setTimeout(() => {
@@ -96,6 +99,7 @@ const App = () => {
         const id = persons.find(person => person.name === newName).id
         phoneService.update(id, nameObject)
           .then(response => {
+            console.log(1)
             setPersons(persons.map(person => person.id !== id ? person : response))
             setConfirmMessage(`Changed ${newName}`)
             setTimeout(() => {
@@ -105,13 +109,10 @@ const App = () => {
             setNewPhoneNumber('')
           })
           .catch(error => {
-            setErrorMessage(`Information of ${newName} has already been removed from server`)
+            setErrorMessage(Object.values(error.response.data))
             setTimeout(() => {
               setErrorMessage(null)
             }, 5000)
-            setPersons(persons.filter(n => n.id !== id))
-            setNewName('')
-            setNewPhoneNumber('')
           })
       }
     }
@@ -125,6 +126,12 @@ const App = () => {
           }, 5000)
           setNewName('')
           setNewPhoneNumber('')
+        })
+        .catch(error => {
+          setErrorMessage(Object.values(error.response.data))
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })
     }
   }
@@ -157,7 +164,7 @@ const App = () => {
       <h3>add a new</h3>
       <PersonForm addName={addName} newName={newName} handleNameChange={handleNameChange} newPhoneNumber={newPhoneNumber} handlePhoneChange={handlePhoneChange} />
       <h3>Numbers</h3>
-      <Persons persons={persons} setPersons={setPersons} setErrorMessage={setErrorMessage} setNewName={setNewName} setNewPhoneNumber={setNewPhoneNumber} />
+      <Persons persons={persons} setPersons={setPersons} setErrorMessage={setErrorMessage} setNewName={setNewName} setNewPhoneNumber={setNewPhoneNumber} setConfirmMessage={setConfirmMessage} />
     </div>
   )
 }
