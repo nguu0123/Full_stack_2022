@@ -1,6 +1,7 @@
 const { MONGODB_URI, PORT } = require('./utils/config')
 const http = require('http')
 const express = require('express')
+require('express-async-errors')
 const app = express()
 const cors = require('cors')
 const blogRouter = require('./controller/blogs')
@@ -12,3 +13,4 @@ app.use('/api/blogs', blogRouter)
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
+module.exports = app
