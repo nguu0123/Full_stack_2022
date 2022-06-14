@@ -38,7 +38,7 @@ beforeEach(async () => {
 })
 test('there are three notes', async () => {
     const response = await api.get('/api/blogs')
-    expect(response.body).toHaveLength(3)
+    expect(response.body).tohavelength(3)
 })
 test('valid id', async () => {
     const response = await api.get('/api/blogs')
@@ -77,6 +77,40 @@ test('able to return bad request', async () => {
         .post('/api/blogs')
         .send(blogObject)
         .expect(400)
+})
+test('Delete 1 blog', async () => {
+    const blogResponse = await api.get('/api/blogs')
+    const blogs = blogResponse.body
+    const blogIdToDelete = blogs[0].id
+    await api.delete(`/api/blogs/${blogIdToDelete}`)
+    const response = await api.get('/api/blogs')
+    expect(response.body).toHaveLength(2)
+})
+
+test('Delete 2 blogs', async () => {
+    const blogResponse = await api.get('/api/blogs')
+    const blogs = blogResponse.body
+    const blogIdToDelete = blogs[0].id
+    await api.delete(`/api/blogs/${blogIdToDelete}`)
+    const blogIdToDelete1 = blogs[1].id
+    await api.delete(`/api/blogs/${blogIdToDelete1}`)
+    const response = await api.get('/api/blogs')
+    expect(response.body).toHaveLength(1)
+})
+
+test('Update blogs', async () => {
+    const blogResponse = await api.get('/api/blogs')
+    const blogs = blogResponse.body
+    const blogIdToDelete = blogs[0].id
+    const newBlog = {
+        title: blogs[0].title,
+        author: blogs[0].author,
+        url: blogs[0].url,
+        likes: 1000
+    }
+    await api.put(`/api/blogs/${blogIdToDelete}`).send(newBlog)
+    const response = await api.get('/api/blogs')
+    expect(response.body[0].likes).toEqual(1000)
 })
 
 
