@@ -1,13 +1,15 @@
 const { MONGODB_URI, PORT } = require('../utils/config')
-require('express-async-errors')
 const mongoose = require('mongoose')
-const { cat } = require('lodash-contrib')
 
 const blogSchema = new mongoose.Schema({
     title: { type: String, required: true },
     author: String,
     url: { type: String, required: true },
-    likes: { type: Number, default: 0 }
+    likes: { type: Number, default: 0 },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }
 })
 
 blogSchema.set('toJSON', {
@@ -18,9 +20,4 @@ blogSchema.set('toJSON', {
     }
 })
 const mongoUrl = MONGODB_URI
-const main = async () => {
-    const result = await mongoose.connect(mongoUrl)
-    console.log('connected to MongoDB')
-}
-main()
 module.exports = mongoose.model('Blog', blogSchema)
