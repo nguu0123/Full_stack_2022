@@ -1,0 +1,21 @@
+POST http://localhost:3003/api/users
+content-type: application/json
+
+{           "username": "nguu0123",
+            "name": "nguu0123",
+            "password": "3asdsa2"
+        
+}
+###
+
+POST http://localhost:3003/api/blogs
+content-type: application/json
+
+{
+        "title": "test130",
+        "author": "test103 author",
+        "url": "test110 url",
+        "likes": 2,
+        "userId": "62aa2da8e45945bd90f07e66"
+        
+}
