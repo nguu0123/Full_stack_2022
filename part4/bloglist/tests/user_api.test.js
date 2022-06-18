@@ -122,7 +122,7 @@ describe('when there is initially one user in db', () => {
     })
     test('create blog without token fail', async () => {
         await api
-            .post('/api/users')
+            .post('/api/blogs')
             .send(newUser3)
             .expect(400)
 
