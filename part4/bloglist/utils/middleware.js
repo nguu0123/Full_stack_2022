@@ -1,6 +1,8 @@
 const logger = require('./logger')
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
+const { dec, cons } = require('lodash-contrib')
+const decode = require('jsonwebtoken/decode')
 const requestLogger = (request, response, next) => {
     logger.info('Method:', request.method)
     logger.info('Path:  ', request.path)
@@ -42,6 +44,7 @@ const userExtractor = async (request, response, next) => {
     if (!decodedToken) {
         response.status(404).json({ error: 'token missing or invalid' })
     }
+    console.log(decodedToken)
     request.body.user = await User.findById(decodedToken.id)
     next()
 }

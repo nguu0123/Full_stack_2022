@@ -17,20 +17,21 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
     updateBlog(newBlog)
   }
   return (
-    <div style={blogStyle}>
-      <div>
+    <div className='blog' style={blogStyle}>
+      < div >
         {blog.title}
-        <button onClick={toggleVisibility} style={showWhenVisible}>view</button>
-        <button onClick={toggleVisibility} style={hideWhenVisible}>hide</button>
-      </div>
+        < button className='view_button' onClick={toggleVisibility} style={showWhenVisible} > view</button >
+        <button id='hide_button' onClick={toggleVisibility} style={hideWhenVisible}>hide</button>
+      </div >
       <div style={hideWhenVisible}>
         <p> {blog.url}</p>
         <div>
-          {blog.likes} <button onClick={addLike}> like</button>
+          {blog.likes} <button onClick={addLike} className='like_button'> like</button>
         </div>
         <p> {blog.author}</p>
+        <button onClick={() => deleteBlog(blog)} id='delete_button'> remove</button>
       </div>
-    </div>
+    </div >
   )
 }
 export default Blog

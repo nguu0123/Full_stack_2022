@@ -7,7 +7,7 @@ content-type: application/json
 ###
 POST http://localhost:3003/api/blogs
 content-type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ndXUwMTIzIiwiaWQiOiI2MmFhMzIwM2ZhM2E0MmM2YWI0YzM3MjMiLCJpYXQiOjE2NTUzMjMyNDR9.FozBzexA1HHDM75ke_Kbosrp0f_CBgmHIMqhZ-E_NwY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ndXUwMTIzIiwiaWQiOiI2MmFhMzIwM2ZhM2E0MmM2YWI0YzM3MjMiLCJpYXQiOjE2NTUzMjMyNDR9.FozBzexA1HHDM75ke_Kbosrp0f_CBgmHIMqhZ-E_NwY 
 
 {          
         "title": "qwe31asdasd23qwe",
