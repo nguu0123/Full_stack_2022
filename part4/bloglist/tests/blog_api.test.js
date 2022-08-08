@@ -36,6 +36,11 @@ beforeEach(async () => {
     blogObject = new Blog(initialBlogs[2])
     await blogObject.save()
 })
+
+beforeEach(async () => {
+    console.log(121312)
+})
+
 test('there are three notes', async () => {
     const response = await api.get('/api/blogs')
     expect(response.body).tohavelength(3)
