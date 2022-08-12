@@ -1,0 +1,28 @@
+POST http://localhost:3003/api/login
+content-type: application/json
+
+{           "username": "nguu0123",
+            "password": "nguu0123456"
+}
+###
+POST http://localhost:3003/api/blogs
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ndXUwMTIzIiwiaWQiOiI2MmFhMzIwM2ZhM2E0MmM2YWI0YzM3MjMiLCJpYXQiOjE2NTUzMjMyNDR9.FozBzexA1HHDM75ke_Kbosrp0f_CBgmHIMqhZ-E_NwY 
+
+{          
+        "title": "qwe31asdasd23qwe",
+        "author": "123 asdasdut321hor",
+        "url": "312312321321 url",
+        "likes": 2
+}
+###
+DELETE http://localhost:3003/api/blogs/62ab25eea7b69d5bd29e17b0
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ndXUwMTIzIiwiaWQiOiI2MmFhMzIwM2ZhM2E0MmM2YWI0YzM3MjMiLCJpYXQiOjE2NTUzMjIzNjB9.Ld2PxA3vDcxE36JHZEcxNryyr1gY1wlTBESp9wS4tTw
+###
+DELETE http://localhost:3003/api/blogs/62aa2dbbe45945bd90f07e6b
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im5ndXUwMTIzIiwiaWQiOiI2MmFhMzIwM2ZhM2E0MmM2YWI0YzM3MjMiLCJpYXQiOjE2NTUzMjIzNjB9.Ld2PxA3vDcxE36JHZEcxNryyr1gY1wlTBESp9wS4tTw
+     
+
+
