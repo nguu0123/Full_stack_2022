@@ -4,6 +4,7 @@ import {
   removeNotification,
 } from "../reducers/notificationReducer"
 import { useDispatch } from "react-redux"
+import { Form } from "react-bootstrap"
 const CreateBlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState("")
   const [author, setAuthor] = useState("")
@@ -27,7 +28,7 @@ const CreateBlogForm = ({ createBlog }) => {
   }
   return (
     <div>
-      <form onSubmit={addBlog}>
+      <Form onSubmit={addBlog}>
         <div>
           title:{" "}
           <input
@@ -61,7 +62,7 @@ const CreateBlogForm = ({ createBlog }) => {
         <button id="create_blog_button" type="submit">
           create
         </button>
-      </form>
+      </Form>
     </div>
   )
 }

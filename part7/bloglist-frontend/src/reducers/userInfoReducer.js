@@ -3,7 +3,7 @@ import { useSelector } from "react-redux"
 import usersService from "../services/users"
 const userInfoSlice = createSlice({
   name: "userInfo",
-  initialState: [],
+  initialState: null,
   reducers: {
     setUserInfo(state, action) {
       return action.payload

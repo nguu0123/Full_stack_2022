@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { initializeBlog } from "./reducers/blogReducer"
 import { setUser } from "./reducers/userReducer"
 import LoginForm from "./components/LoginForm"
-import Blogs from "./components/Blogs"
+import Blog from "./components/Blog"
 import {
   BrowserRouter as Router,
   Routes,
@@ -13,13 +13,15 @@ import {
   Navigate,
   Link,
 } from "react-router-dom"
-import Home from "./components/Home"
 import UsersInfo from "./components/UsersInfo"
-import usersService from "./services/users"
 import { setUserInfo, updateUserInfo } from "./reducers/userInfoReducer"
+import UserBlogs from "./components/UserBlogs"
+import Blogs from "./components/Blogs"
+import { Container } from "@mui/material"
 const App = () => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
+  const blogs = useSelector((state) => state.blogs)
   useEffect(() => {
     dispatch(initializeBlog())
     dispatch(updateUserInfo())
@@ -47,48 +49,52 @@ const App = () => {
     }
   }
   return (
-    <Router>
-      <div>
-        <Link style={padding} to="/">
-          home
-        </Link>
-        {user ? (
-          <span>
-            <Link style={padding} to="/users">
-              blogs
-            </Link>
-            <em>{user.username} logged in</em>
-            {"   "}
-            <button onClick={handleLogout}>logout</button>
-          </span>
-        ) : (
-          <Link style={padding} to="/login">
-            login
+    <div className="container">
+      <Router>
+        <div>
+          <Link style={padding} to="/">
+            blogs
           </Link>
-        )}
-      </div>
-      <Routes>
-        <Route
-          path="/users"
-          element={
-            user !== null ? (
-              <div>
-                <UsersInfo />
-              </div>
-            ) : (
-              <Navigate replace to="/login" />
-            )
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            user === null ? <LoginForm /> : <Navigate replace to="/users" />
-          }
-        />
-        <Route path="/" element={<Home />} />
-      </Routes>
-    </Router>
+          {user ? (
+            <span>
+              <Link style={padding} to="/users">
+                users
+              </Link>
+              <em>{user.username} logged in</em>
+              {"   "}
+              <button onClick={handleLogout}>logout</button>
+            </span>
+          ) : (
+            <Link style={padding} to="/login">
+              login
+            </Link>
+          )}
+        </div>
+        <Routes>
+          <Route
+            path="/users"
+            element={
+              user !== null ? (
+                <div>
+                  <UsersInfo />
+                </div>
+              ) : (
+                <Navigate replace to="/login" />
+              )
+            }
+          />
+          <Route path="/users/:id" element={<UserBlogs />} />
+          <Route path="/blogs/:id" element={<Blog />} />
+          <Route
+            path="/login"
+            element={
+              user === null ? <LoginForm /> : <Navigate replace to="/users" />
+            }
+          />
+          <Route path="/" element={<Blogs />} />
+        </Routes>
+      </Router>
+    </div>
   )
 }
 

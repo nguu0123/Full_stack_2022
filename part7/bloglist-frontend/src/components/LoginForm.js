@@ -5,6 +5,9 @@ import blogService from "../services/blogs"
 import { useDispatch } from "react-redux"
 import { setUser } from "../reducers/userReducer"
 import { useNavigate } from "react-router-dom"
+import { initializeBlog } from "../reducers/blogReducer"
+import { updateUserInfo } from "../reducers/userInfoReducer"
+import { Form, Button } from "react-bootstrap"
 // TODO Implement show/hide password
 const LoginForm = () => {
   const [username, setUsername] = useState("")
@@ -20,6 +23,8 @@ const LoginForm = () => {
       window.localStorage.setItem("loggedblogappuser", JSON.stringify(user))
       blogService.setToken(user.token)
       dispatch(setUser(user))
+      dispatch(initializeBlog())
+      dispatch(updateUserInfo())
       navigate("/users")
       setPassword("")
       setUsername("")
@@ -32,33 +37,33 @@ const LoginForm = () => {
   }
   return (
     <div>
-      <Notification message={errorMessage} classname="error" />
+      <Notification message={errorMessage} classname="danger" />
       <h2>Log in to application</h2>
-      <form onSubmit={handleLogin} id="loginform">
-        <div>
-          username {"   "}
-          <input
+      <Form onSubmit={handleLogin} id="loginform">
+        <Form.Group>
+          <Form.Label> username</Form.Label>
+          <Form.Control
             id="username"
             type="text"
             value={username}
             name="username"
             onChange={({ target }) => setUsername(target.value)}
           />
-        </div>
-        <div>
-          password {"   "}
-          <input
+        </Form.Group>
+        <Form.Group>
+          <Form.Label> password</Form.Label>
+          <Form.Control
             id="password"
             type={!showPassword ? "password" : "text"}
             value={password}
             name="Password"
             onChange={({ target }) => setPassword(target.value)}
           />
-        </div>
-        <button id="login_button" type="submit">
+        </Form.Group>
+        <Button id="login_button" type="submit">
           login{" "}
-        </button>
-      </form>
+        </Button>
+      </Form>
     </div>
   )
 }

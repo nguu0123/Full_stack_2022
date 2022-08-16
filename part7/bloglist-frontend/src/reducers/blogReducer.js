@@ -25,6 +25,15 @@ const blogSlice = createSlice({
       }
       return state.map((blog) => (blog.id !== blogID ? blog : changedBlog))
     },
+    addComment(state, action) {
+      const blog = action.payload.blogToShow
+      const comment = action.payload.content
+      const changedBlog = {
+        ...blog,
+        comments: [...blog.comments, comment],
+      }
+      return state.map((blog) => (blog.id !== blog.id ? blog : changedBlog))
+    },
   },
 })
 export const initializeBlog = () => {
@@ -41,9 +50,7 @@ export const createBlog = (content) => {
 }
 export const deleteBlog = (content) => {
   return async (dispatch) => {
-    const start = performance.now()
     await blogService.deleteBlog(content)
-    console.log(performance.now() - start)
     dispatch(removeBlog(content))
   }
 }
@@ -53,5 +60,6 @@ export const updateLike = (content) => {
     dispatch(addLike(content))
   }
 }
-export const { addBlog, setBlogs, removeBlog, addLike } = blogSlice.actions
+export const { addBlog, setBlogs, removeBlog, addLike, addComment } =
+  blogSlice.actions
 export default blogSlice.reducer

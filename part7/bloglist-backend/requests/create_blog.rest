@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+content-type: application/json
+Authorization: 
+
+{          
+        "title": "qwe31asdasd23qwe",
+        "author": "123 asdasdut321hor",
+        "url": "312312321321 url",
+        "userId": "62c932cc26870e1df0cbfa4e"
+}

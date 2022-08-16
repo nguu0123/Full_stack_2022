@@ -4,6 +4,7 @@ const User = require("../models/user")
 const jwt = require("jsonwebtoken")
 const res = require("express/lib/response")
 const { userExtractor } = require("../utils/middleware")
+const { cons } = require("lodash-contrib")
 
 blogsRouter.get("/", async (request, response) => {
   const blogs = await Blog.find({}).populate({
@@ -15,7 +16,6 @@ blogsRouter.get("/", async (request, response) => {
 
 blogsRouter.post("/", userExtractor, async (request, response) => {
   const body = request.body
-  console.log(body)
   const user = request.body.user
   const blog = new Blog({
     title: body.title,
@@ -61,8 +61,21 @@ blogsRouter.put("/:id", async (request, response) => {
     response.status(404).end()
   }
 })
+blogsRouter.post("/:id/comments", async (request, response) => {
+  const { comment } = request.body
+  console.log(request.body)
+  try {
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      request.params.id,
+      { $push: { comments: [comment] } },
+      { new: true }
+    )
+    response.json(updatedBlog)
+  } catch (error) {
+    response.status(404).end()
+  }
+})
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: "unknown endpoint" })
 }
-
 module.exports = blogsRouter

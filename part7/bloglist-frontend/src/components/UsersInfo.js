@@ -16,14 +16,16 @@ const UsersInfo = () => {
             <th>blogs created</th>
           </tr>
 
-          {users.map((user) => (
-            <tr key={user.id}>
-              <th style={tableStyle}>
-                <Link to={`/users/${user.id}`}> {user.username}</Link>
-              </th>
-              <th style={tableStyle}> {user.numOfBlogs} </th>
-            </tr>
-          ))}
+          {users === null
+            ? null
+            : users.map((user) => (
+                <tr key={user.id}>
+                  <th style={tableStyle}>
+                    <Link to={`/users/${user.id}`}> {user.username}</Link>
+                  </th>
+                  <th style={tableStyle}> {user.numOfBlogs} </th>
+                </tr>
+              ))}
         </tbody>
       </table>
     </div>
