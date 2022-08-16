@@ -1,140 +1,95 @@
-import { useState, useEffect, useRef } from "react"
-import Blog from "./components/Blog"
+import { useEffect, useState } from "react"
 import blogService from "./services/blogs"
-import loginService from "./services/login"
-import Notification from "./components/Notification"
 import "./App.css"
-import Togglable from "./components/Togglable"
-import BlogForm from "./components/BlogForm"
 import { useDispatch, useSelector } from "react-redux"
-import { createBlog, initializeBlog } from "./reducers/blogReducer"
+import { initializeBlog } from "./reducers/blogReducer"
+import { setUser } from "./reducers/userReducer"
+import LoginForm from "./components/LoginForm"
+import Blogs from "./components/Blogs"
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Link,
+} from "react-router-dom"
+import Home from "./components/Home"
+import UsersInfo from "./components/UsersInfo"
+import usersService from "./services/users"
+import { setUserInfo, updateUserInfo } from "./reducers/userInfoReducer"
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [errorMessage, setErrorMessage] = useState(null)
-  const blogFormRef = useRef()
-  const notification = useSelector((state) => state.notification)
   const dispatch = useDispatch()
-  const blogsFromReducer = useSelector((state) => state.blogs)
-  console.log(blogsFromReducer)
+  const user = useSelector((state) => state.user)
   useEffect(() => {
     dispatch(initializeBlog())
+    dispatch(updateUserInfo())
   }, [dispatch])
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedblogappuser")
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
+      dispatch(setUser(user))
       blogService.setToken(user.token)
     }
   }, [])
-  const handleLogin = async (event) => {
-    event.preventDefault()
-    try {
-      const user = await loginService.login({ username, password })
-      window.localStorage.setItem("loggedblogappuser", JSON.stringify(user))
-      blogService.setToken(user.token)
-      setUser(user)
-      setPassword("")
-      setUsername("")
-    } catch (exception) {
-      setErrorMessage("Wrong username or password")
-      setTimeout(() => {
-        setErrorMessage(null)
-      }, 5000)
-    }
+  const padding = {
+    padding: 5,
   }
   const handleLogout = async (event) => {
     event.preventDefault()
     try {
       blogService.setToken(null)
-      setUser(null)
+      dispatch(setUser(null))
       window.localStorage.clear()
     } catch (exception) {
       console.log(exception)
     }
   }
-  const handleCreateBlog = async (newBlog) => {
-    try {
-      dispatch(createBlog(newBlog))
-      blogFormRef.current.toggleVisibility()
-    } catch (exception) {
-      console.log(exception)
-    }
-  }
-  const updateBlogLikes = async (newBlog) => {
-    await blogService.update(newBlog)
-    const newBlogs = await blogService.getAll()
-    setBlogs(newBlogs)
-  }
-  const deleteBlog = async (blog) => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      await blogService.deleteBlog(blog)
-      const newBlogs = await blogService.getAll()
-      setBlogs(newBlogs)
-    }
-  }
-
-  const loginForm = () => (
-    <div>
-      <Notification message={errorMessage} classname="error" />
-      <h2>Log in to application</h2>
-      <form onSubmit={handleLogin} id="loginform">
-        <div>
-          username{" "}
-          <input
-            id="username"
-            type="text"
-            value={username}
-            name="username"
-            onChange={({ target }) => setUsername(target.value)}
-          />
-        </div>
-        <div>
-          password
-          <input
-            id="password"
-            type="text"
-            value={password}
-            name="Password"
-            onChange={({ target }) => setPassword(target.value)}
-          />
-        </div>
-        <button id="login_button" type="submit">
-          login{" "}
-        </button>
-      </form>
-    </div>
+  return (
+    <Router>
+      <div>
+        <Link style={padding} to="/">
+          home
+        </Link>
+        {user ? (
+          <span>
+            <Link style={padding} to="/users">
+              blogs
+            </Link>
+            <em>{user.username} logged in</em>
+            {"   "}
+            <button onClick={handleLogout}>logout</button>
+          </span>
+        ) : (
+          <Link style={padding} to="/login">
+            login
+          </Link>
+        )}
+      </div>
+      <Routes>
+        <Route
+          path="/users"
+          element={
+            user !== null ? (
+              <div>
+                <UsersInfo />
+              </div>
+            ) : (
+              <Navigate replace to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            user === null ? <LoginForm /> : <Navigate replace to="/users" />
+          }
+        />
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </Router>
   )
-  const blogForm = () => (
-    <div>
-      <Notification message={notification} classname="notification" />
-      <h2>blogs</h2>
-      {user.username} logged in
-      <button onClick={handleLogout}>logout</button>
-      <Togglable buttonLabel="new blog" ref={blogFormRef}>
-        <h2> create new</h2>
-        <BlogForm createBlog={handleCreateBlog} />
-      </Togglable>
-      {blogsFromReducer
-        .filter((blog) => blog.user !== undefined && blog.user !== null)
-        .filter((blog) => blog.user.username === user.username)
-        .sort((a, b) => {
-          return -(a.likes - b.likes)
-        })
-        .map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            updateBlog={updateBlogLikes}
-            deleteBlog={deleteBlog}
-          />
-        ))}
-    </div>
-  )
-  return <div>{user === null ? loginForm() : blogForm()}</div>
 }
 
 export default App

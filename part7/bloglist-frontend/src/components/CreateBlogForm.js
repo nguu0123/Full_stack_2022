@@ -4,19 +4,19 @@ import {
   removeNotification,
 } from "../reducers/notificationReducer"
 import { useDispatch } from "react-redux"
-const BlogForm = ({ createBlog }) => {
+const CreateBlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState("")
   const [author, setAuthor] = useState("")
   const [url, setUrl] = useState("")
   const dispatch = useDispatch()
-  const addBlog = async (event) => {
+  const addBlog = (event) => {
     event.preventDefault()
     const newBlog = {
       title: title,
       author: author,
       url: url,
     }
-    await createBlog(newBlog)
+    createBlog(newBlog)
     dispatch(changeNotification(`a new blog ${title} added`))
     setTimeout(() => {
       dispatch(removeNotification())
@@ -65,4 +65,4 @@ const BlogForm = ({ createBlog }) => {
     </div>
   )
 }
-export default BlogForm
+export default CreateBlogForm
