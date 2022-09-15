@@ -17,15 +17,11 @@ import UsersInfo from "./components/UsersInfo"
 import { setUserInfo, updateUserInfo } from "./reducers/userInfoReducer"
 import UserBlogs from "./components/UserBlogs"
 import Blogs from "./components/Blogs"
-import { Container } from "@mui/material"
+import SigninForm from "./components/SigninForm"
 const App = () => {
   const dispatch = useDispatch()
   const user = useSelector((state) => state.user)
   const blogs = useSelector((state) => state.blogs)
-  useEffect(() => {
-    dispatch(initializeBlog())
-    dispatch(updateUserInfo())
-  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedblogappuser")
@@ -33,6 +29,8 @@ const App = () => {
       const user = JSON.parse(loggedUserJSON)
       dispatch(setUser(user))
       blogService.setToken(user.token)
+      dispatch(initializeBlog())
+      dispatch(updateUserInfo())
     }
   }, [])
   const padding = {
@@ -92,6 +90,7 @@ const App = () => {
             }
           />
           <Route path="/" element={<Blogs />} />
+          <Route path="/signup" element={<SigninForm />} />
         </Routes>
       </Router>
     </div>
